@@ -37,4 +37,4 @@ yarn-error.log*
 .env.local*
 .env*
 
-.vscode/
+.vscode/*
