@@ -1,23 +1,19 @@
 <script setup>
-import { ref } from 'vue';
-import { auth } from 'boot/firebase';
+import { onMounted, ref } from 'vue';
+// import { auth } from 'boot/firebase';
+// import { useQuasar } from 'quasar';
+import MainMenu from './../components/MainMenu.vue';
+import MenuUser from './../components/MenuUser.vue';
 
-const leftDrawerOpen = ref(false);
-
+const drawer = ref(false);
+// const $q = useQuasar();
 function toggleLeftDrawer() {
-  leftDrawerOpen.value = !leftDrawerOpen.value;
+  drawer.value = !drawer.value;
 }
 
-function logout() {
-  auth
-    .signOut()
-    .then(() => {
-      // Sign-out successful.
-    })
-    .catch((error) => {
-      console.error(error.code);
-    });
-}
+
+onMounted(()=>{
+})
 </script>
 <template>
   <q-layout view="lHh lpR lFf">
@@ -26,13 +22,14 @@ function logout() {
         <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
 
         <q-toolbar-title> Quasar App</q-toolbar-title>
-        <q-btn @click="logout">Salir</q-btn>
-        <div>Quasar v{{ $q.version }}</div>
+        <MenuUser/>
+<!--        <q-btn @click="logout">Salir</q-btn>-->
+<!--        <div>Quasar v{{ $q.version }}</div>-->
       </q-toolbar>
     </q-header>
 
-    <q-drawer show-if-above v-model="leftDrawerOpen" side="left" bordered>
-      <!-- drawer content -->
+    <q-drawer show-if-above v-model="drawer" side="left" bordered>
+        <MainMenu />
     </q-drawer>
 
     <q-page-container>

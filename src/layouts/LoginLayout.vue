@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { auth } from 'boot/firebase';
 import { useQuasar } from 'quasar';
+import { rules } from 'boot/helpers';
 
 const router = useRouter();
 const $q = useQuasar();
@@ -77,7 +78,7 @@ const handleSubmit = () => {
                       label="Email"
                       type="email"
                       class="q-pa-xs"
-                      :rules="[val => !!val || 'Field is required']"
+                      :rules="rules.required"
                     />
                     <q-input
                       filled
@@ -85,7 +86,7 @@ const handleSubmit = () => {
                       label="Password"
                       type="password"
                       class="q-pa-xs"
-                      :rules="[val => !!val || 'Field is required']"
+                      :rules="rules.required"
                     />
                   </div>
                 </q-card-section>
