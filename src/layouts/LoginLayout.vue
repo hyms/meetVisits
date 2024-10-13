@@ -1,26 +1,38 @@
 <script setup>
-import {ref} from 'vue';
-import {supabase} from 'boot/supabase';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { auth } from 'boot/firebase';
+import { useQuasar } from 'quasar';
+
+const router = useRouter();
+const $q = useQuasar();
 
 const email = ref('');
 const password = ref('');
 const messageError = ref('');
 const loading = ref(false);
 
-const handleSubmit = async () => {
-  loading.value = true;
-  const {error} = await supabase.auth.signInWithPassword({
-    email: email.value,
-    password: password.value,
-  });
-  loading.value = false;
-  if (error) {
-    console.error(error);
-    messageError.value = error.message
-    // Manejar el error de inicio de sesión
-  } else {
-    messageError.value = 'success'
-  }
+const handleSubmit = () => {
+  $q.loading.show();
+  auth
+    .signInWithEmailAndPassword(email.value, password.value)
+    .then((user) => {
+      console.log(user);
+      router.push('/');
+    })
+    .catch((error) => {
+      if ('auth/invalid-credential' === error.code) {
+        messageError.value = 'Usuario/Contraseña invalida';
+      }
+      console.error(error.code);
+      console.error(error.message);
+    })
+    .finally(() => {
+      $q.loading.hide();
+    });
+
+  // let redirect = this.$router.to.fullPath ?? '/';
+  // this.$router.push(redirect) // redirect to the feed
 };
 </script>
 <template>
@@ -30,40 +42,61 @@ const handleSubmit = async () => {
         <div class="auth-wrapper auth-v1">
           <div class="auth-inner">
             <div class="q-py-md q-gutter-sm">
-            <q-banner class="bg-red text-white" rounded v-if="messageError" inline-actions>
-              {{ messageError }}
-              <template v-slot:action>
-                <q-btn flat square icon="closer" color="white" @click="messageError=''"/>
-              </template>
-            </q-banner>
+              <q-banner
+                class="bg-red text-white"
+                rounded
+                v-if="messageError"
+                inline-actions
+              >
+                {{ messageError }}
+                <template v-slot:action>
+                  <q-btn
+                    flat
+                    square
+                    icon="closer"
+                    color="white"
+                    @click="messageError = ''"
+                  />
+                </template>
+              </q-banner>
             </div>
             <q-form @submit.prevent="handleSubmit">
-
               <q-card class="auth-card">
                 <q-card-section>
-                <div class="text-h6">Bienvenido a Clinic</div>
-                <div class="text-subtitle2">  Por favor ingresa tu usuario y contraseña</div>
+                  <div class="text-h6">Bienvenido a Clinic</div>
+                  <div class="text-subtitle2">
+                    Por favor ingresa tu usuario y contraseña
+                  </div>
                 </q-card-section>
+                <q-separator inset />
                 <q-card-section>
                   <div class="q-py-md q-gutter-sm">
-                  <q-input
-                    filled
-                    v-model="email"
-                    label="Email"
-                    type="email"
-                    class="q-pa-"
-                  />
-                  <q-input
-                    filled
-                    v-model="password"
-                    label="Password"
-                    type="password"
-                    class="q-pa-"
-                  />
+                    <q-input
+                      filled
+                      v-model="email"
+                      label="Email"
+                      type="email"
+                      class="q-pa-xs"
+                      :rules="[val => !!val || 'Field is required']"
+                    />
+                    <q-input
+                      filled
+                      v-model="password"
+                      label="Password"
+                      type="password"
+                      class="q-pa-xs"
+                      :rules="[val => !!val || 'Field is required']"
+                    />
                   </div>
                 </q-card-section>
                 <q-card-actions class="row justify-end">
-                  <q-btn label="Iniciar sesión" type="submit" color="primary" :loading="loading" :disable="loading"/>
+                  <q-btn
+                    label="Iniciar sesión"
+                    type="submit"
+                    color="primary"
+                    :loading="loading"
+                    :disable="loading"
+                  />
                 </q-card-actions>
               </q-card>
             </q-form>
@@ -71,12 +104,10 @@ const handleSubmit = async () => {
         </div>
       </q-page>
     </q-page-container>
-
   </q-layout>
 </template>
 
 <style lang="scss">
-
 .auth-wrapper {
   display: flex;
   min-height: calc(var(--vh, 1vh) * 100);

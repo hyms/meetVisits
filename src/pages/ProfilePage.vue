@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
 import {ref, onMounted} from 'vue';
-import { supabase } from 'boot/supabase';
+// import { auth } from 'boot/firebase';
 
 const user = ref({
   email: ''
@@ -15,12 +15,5 @@ const session = ref();
 
 onMounted(() => {
   user.value = session.value?.user;
-  supabase.auth.getSession().then(({data}) => {
-    session.value = data.session;
-  });
-
-  supabase.auth.onAuthStateChange((_, _session) => {
-    session.value = _session;
-  });
 });
 </script>

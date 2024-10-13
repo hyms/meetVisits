@@ -14,8 +14,10 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/login',
-    name: 'auth',
     component: () => import('layouts/LoginLayout.vue'),
+    meta: {
+      requiresAuth: false,
+    },
   },
 
   // Always leave this as last one,

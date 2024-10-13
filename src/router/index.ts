@@ -3,8 +3,6 @@ import {createMemoryHistory, createRouter, createWebHashHistory, createWebHistor
 
 import routes from './routes';
 
-import {init as supabaseInit} from 'boot/supabase';
-
 /*
  * If not building with SSR mode, you can
  * directly export the Router instantiation;
@@ -15,7 +13,6 @@ import {init as supabaseInit} from 'boot/supabase';
  */
 
 export default route(async function (/* { store, ssrContext } */) {
-  await supabaseInit();
 
   const createHistory = process.env.SERVER
     ? createMemoryHistory

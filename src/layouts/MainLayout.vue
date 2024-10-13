@@ -1,21 +1,32 @@
 <script setup>
-import {ref} from 'vue'
+import { ref } from 'vue';
+import { auth } from 'boot/firebase';
 
-const leftDrawerOpen = ref(false)
+const leftDrawerOpen = ref(false);
 
 function toggleLeftDrawer() {
-  leftDrawerOpen.value = !leftDrawerOpen.value
+  leftDrawerOpen.value = !leftDrawerOpen.value;
+}
+
+function logout() {
+  auth
+    .signOut()
+    .then(() => {
+      // Sign-out successful.
+    })
+    .catch((error) => {
+      console.error(error.code);
+    });
 }
 </script>
 <template>
   <q-layout view="lHh lpR lFf">
-
     <q-header elevated class="bg-primary text-white">
       <q-toolbar>
-        <q-btn dense flat round icon="menu" @click="toggleLeftDrawer"/>
+        <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
 
         <q-toolbar-title> Quasar App</q-toolbar-title>
-
+        <q-btn @click="logout">Salir</q-btn>
         <div>Quasar v{{ $q.version }}</div>
       </q-toolbar>
     </q-header>
@@ -25,7 +36,7 @@ function toggleLeftDrawer() {
     </q-drawer>
 
     <q-page-container>
-      <router-view/>
+      <router-view />
     </q-page-container>
   </q-layout>
 </template>
